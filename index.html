@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>每日一如紀錄打卡</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 12px; background-color: #f4f6f8; margin: 0; color: #333; }
+    .card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); max-width: 500px; margin: 0 auto; }
+    h2 { text-align: center; color: #1DB446; margin-top: 0; font-size: 20px; }
+    .section-title { font-weight: bold; color: #1DB446; border-bottom: 2px solid #1DB446; padding-bottom: 4px; margin-top: 16px; margin-bottom: 10px; }
+    .form-group { margin-bottom: 12px; }
+    label { font-weight: bold; display: block; margin-bottom: 4px; font-size: 14px; }
+    input[type="date"], select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; background: #fff; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    button { width: 100%; background: #1DB446; color: white; border: none; padding: 12px; font-size: 16px; font-weight: bold; border-radius: 8px; cursor: pointer; margin-top: 16px; }
+    button:disabled { background: #ccc; }
+    #status { text-align: center; margin-top: 8px; font-weight: bold; color: #666; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>📊 每日一如紀錄打卡</h2>
+  
+  <form id="checkinForm">
+    <div class="form-group">
+      <label for="date">打卡日期</label>
+      <input type="date" id="date" required>
+    </div>
+
+    <div class="section-title">🌅 勤行與讀經</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>早課</label>
+        <select id="morning">
+          <option value="早課-長經">早課-長經</option>
+          <option value="早課-短經">早課-短經</option>
+          <option value="僅換佛水">僅換佛水</option>
+          <option value="沒空讀經、沒換佛水">沒空讀經、沒換佛水</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>晚課</label>
+        <select id="evening">
+          <option value="晚課-短經">晚課-短經</option>
+          <option value="晚課-長經">晚課-長經</option>
+          <option value="僅施餓鬼">僅施餓鬼</option>
+          <option value="沒空讀經、沒施餓鬼">沒空讀經、沒施餓鬼</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>拜讀教誌</label>
+        <select id="read_journal">
+          <option value="有讀教誌">有讀教誌</option>
+          <option value="沒有讀教誌">沒有讀教誌</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>親苑時報</label>
+        <select id="shin_paper">
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="section-title">💧 修行與研鑽</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>水行</label>
+        <select id="water"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+      <div class="form-group">
+        <label>接心</label>
+        <select id="jiexin"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>參加法會</label>
+        <select id="dharma_meeting"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+      <div class="form-group">
+        <label>參加集會</label>
+        <select id="join_meeting"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>舉行集會</label>
+        <select id="hold_meeting"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+      <div class="form-group">
+        <label>菩提會</label>
+        <select id="bodhi"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="section-title">🧹 佈施與申請</div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>奉仕</label>
+        <select id="service"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+      <div class="form-group">
+        <label>歡喜佈施</label>
+        <select id="joy_giving"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group">
+        <label>護摩申請</label>
+        <select id="goma"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+      <div class="form-group">
+        <label>超度申請</label>
+        <select id="ancestor"><option value="No">No</option><option value="Yes">Yes</option></select>
+      </div>
+    </div>
+
+    <div class="section-title">❤️ 心境與實踐</div>
+    <div class="form-group">
+      <label>獻上感謝</label>
+      <select id="thank_god">
+        <option value="南無真如">南無真如</option>
+        <option value="忘記">忘記</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>有無加深感謝</label>
+      <select id="deep_thank">
+        <option value="👏感謝所遇到的一切">👏感謝所遇到的一切</option>
+        <option value="😷忘了加深感謝">😷忘了加深感謝</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>與繼主對話</label>
+      <select id="talk_master">
+        <option value="🙋‍♀️小真!Mako醬!">🙋‍♀️小真!Mako醬!</option>
+        <option value="🙈忘記了">🙈忘記了</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>關心所屬</label>
+      <select id="care_members">
+        <option value="主動關心所屬">主動關心所屬</option>
+        <option value="被動回應所屬">被動回應所屬</option>
+        <option value="沒有聯絡或回應所屬">沒有聯絡或回應所屬</option>
+      </select>
+    </div>
+
+    <button type="submit" id="submitBtn">送出每日紀錄</button>
+    <div id="status"></div>
+  </form>
+</div>
+
+<script>
+  const LIFF_ID = "2010983174-lVhn18bd";
+  const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/w14xonc1fu5ex5oyypyfr1hwbpqo8c6s";
+
+  document.getElementById('date').valueAsDate = new Date();
+
+  async function main() {
+    try {
+      await liff.init({ liffId: LIFF_ID });
+      if (!liff.isLoggedIn()) { liff.login(); }
+    } catch (err) { console.error(err); }
+  }
+  main();
+
+  document.getElementById('checkinForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const status = document.getElementById('status');
+    btn.disabled = true;
+    status.innerText = "資料傳送中...";
+
+    let userId = "";
+    try {
+      const profile = await liff.getProfile();
+      userId = profile.userId;
+    } catch(err) {}
+
+    const payload = {
+      userId: userId,
+      date: document.getElementById('date').value,
+      morning: document.getElementById('morning').value,
+      evening: document.getElementById('evening').value,
+      read_journal: document.getElementById('read_journal').value,
+      shin_paper: document.getElementById('shin_paper').value,
+      water: document.getElementById('water').value,
+      jiexin: document.getElementById('jiexin').value,
+      dharma_meeting: document.getElementById('dharma_meeting').value,
+      join_meeting: document.getElementById('join_meeting').value,
+      hold_meeting: document.getElementById('hold_meeting').value,
+      bodhi: document.getElementById('bodhi').value,
+      service: document.getElementById('service').value,
+      joy_giving: document.getElementById('joy_giving').value,
+      goma: document.getElementById('goma').value,
+      ancestor: document.getElementById('ancestor').value,
+      thank_god: document.getElementById('thank_god').value,
+      deep_thank: document.getElementById('deep_thank').value,
+      talk_master: document.getElementById('talk_master').value,
+      care_members: document.getElementById('care_members').value
+    };
+
+    try {
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        status.innerText = "🎉 打卡成功！視窗即將關閉...";
+        setTimeout(() => { if (liff.isInClient()) { liff.closeWindow(); } }, 1500);
+      } else { throw new Error(); }
+    } catch (err) {
+      status.innerText = "❌ 送出失敗，請重試";
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
