@@ -165,16 +165,23 @@
   const LIFF_ID = "2010983174-lVhn18bd";
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/w14xonc1fu5ex5oyypyfr1hwbpqo8c6s";
 
+  // 自動填入今日日期
   document.getElementById('date').valueAsDate = new Date();
 
+  // 初始化 LIFF
   async function main() {
     try {
       await liff.init({ liffId: LIFF_ID });
-      if (!liff.isLoggedIn()) { liff.login(); }
-    } catch (err) { console.error(err); }
+      if (!liff.isLoggedIn()) { 
+        liff.login(); 
+      }
+    } catch (err) { 
+      console.error("LIFF 初始化失敗:", err); 
+    }
   }
   main();
 
+  // 表單送出處理
   document.getElementById('checkinForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitBtn');
@@ -184,12 +191,16 @@
 
     let userId = "";
     try {
-      const profile = await liff.getProfile();
-      userId = profile.userId;
-    } catch(err) {}
+      if (liff.isLoggedIn()) {
+        const profile = await liff.getProfile();
+        userId = profile.userId;
+      }
+    } catch(err) {
+      console.error("無法取得 Profile:", err);
+    }
 
     const payload = {
-      userId: userId,
+      userId: userId, // 送出 LINE 用戶 ID
       date: document.getElementById('date').value,
       morning: document.getElementById('morning').value,
       evening: document.getElementById('evening').value,
@@ -220,8 +231,14 @@
 
       if (res.ok) {
         status.innerText = "🎉 打卡成功！視窗即將關閉...";
-        setTimeout(() => { if (liff.isInClient()) { liff.closeWindow(); } }, 1500);
-      } else { throw new Error(); }
+        setTimeout(() => { 
+          if (liff.isInClient()) { 
+            liff.closeWindow(); 
+          } 
+        }, 1500);
+      } else { 
+        throw new Error("Make 回傳異常"); 
+      }
     } catch (err) {
       status.innerText = "❌ 送出失敗，請重試";
       btn.disabled = false;
