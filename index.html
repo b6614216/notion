@@ -165,8 +165,12 @@
   const LIFF_ID = "2010983174-lVhn18bd";
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/w14xonc1fu5ex5oyypyfr1hwbpqo8c6s";
 
-  // // 自動填入今日日期
-  // document.getElementById('date').valueAsDate = new Date();
+  // 改良版自動填入今日日期（高相容性，防止行動裝置不支援 valueAsDate）
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('date').value = `${yyyy}-${mm}-${dd}`;
 
   // 初始化 LIFF
   async function main() {
@@ -228,19 +232,21 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-
+      
       if (res.ok) {
-        status.innerText = "🎉 打卡成功！視窗即將關閉...";
-        setTimeout(() => { 
-          if (liff.isInClient()) { 
-            liff.closeWindow(); 
-          } 
+        status.innerText = "打卡成功！即將關閉視窗...";
+        setTimeout(() => {
+          if (liff.isInClient()) {
+            liff.closeWindow();
+          }
         }, 1500);
-      } else { 
-        throw new Error("Make 回傳異常"); 
+      } else {
+        status.innerText = "傳送失敗，請稍後再試。";
+        btn.disabled = false;
       }
     } catch (err) {
-      status.innerText = "❌ 送出失敗，請重試";
+      console.error("傳送出錯:", err);
+      status.innerText = "連線錯誤，請檢查網路。";
       btn.disabled = false;
     }
   });
